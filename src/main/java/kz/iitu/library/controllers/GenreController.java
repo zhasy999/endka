@@ -12,11 +12,10 @@ public class GenreController {
 
     public void addGenre(Genre genre){
         if(genreService.addGenre(genre)){
-            System.out.println("Жанр добавлен");
+            System.out.println(genre + "Жанр добавлен");
             return;
         }
-        System.out.println("Error");
-        return;
+        System.out.println("Такой жанр уще существует");
     }
 
     public Genre findGenreByName(String name){

@@ -19,19 +19,19 @@ public class BookController {
 
     public void addBook(Book book) {
         if (bookService.addBook(book)) {
-            System.out.println("Книга добавлена");
+            System.out.println("Книга " + book + " добавлена");
             return;
         }
-        System.out.println("Error");
+        System.out.println(book + " Такая книга уже есть");
     }
 
     public void editBook(Book book) {
         if (bookService.findBookByName(book.getTitle()) != null && book.getId()>0) {
             bookService.save(book);
-            System.out.println("Книга переработано");
+            System.out.println("Книга "+ book+" переработано");
             return;
         }
-        System.out.println("Error");
+        System.out.println( book+" Нет такой книги");
     }
 
     public void addBookToUser(Long userId, Long bookId) {
@@ -40,7 +40,7 @@ public class BookController {
             bookService.findBookById(bookId).notifyMe();
             return;
         }
-        System.out.println("Error");
+        System.out.println("Выходить ошибка книга уже кому то присвоена или ее юзер не запрашивал");
     }
 
     public void returnBookFromUser(Long userId, Long bookId) {
@@ -49,7 +49,7 @@ public class BookController {
             bookService.findBookById(bookId).notifyMe();
             return;
         }
-        System.out.println("Error");
+        System.out.println("Ошибка книга уже свободна");
     }
 
     public void findAllByStatus(Status status){

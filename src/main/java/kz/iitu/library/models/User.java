@@ -16,6 +16,10 @@ public class User {
     private Long id;
 
     private String name;
+
+    @Enumerated(EnumType.STRING)
+    private Type type;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Book> books;
 
@@ -24,9 +28,10 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", name='" + name +
+                ", type='" + type +
                 '}';
     }
     public void notify(Book book){
-        System.out.println("Книга " + book.getTitle() + "теперь у вас" );
+        System.out.println("Книга " + book.getTitle() + " теперь у вас" );
     }
 }

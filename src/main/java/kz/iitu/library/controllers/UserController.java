@@ -14,18 +14,28 @@ public class UserController {
 
     public void addUser(User user){
         if(userService.addUser(user)) {
-            System.out.println("Пользователь добавлен");
+            System.out.println("Пользователь "+user+" добавлен");
             return;
         }
-        System.out.println("Error");
+        System.out.println(user + " Уже есть");
     }
 
     public void addAuthor(Author author){
         if(userService.addAuthor(author)) {
-            System.out.println("Автор добавлен");
+            System.out.println(author + "Автор добавлен");
             return;
         }
-        System.out.println("Error");
+        System.out.println(author + " Уже существует");
+    }
+
+    public void editUser(User user){
+        if(userService.findUserByName(user.getName()) == null) {
+            System.out.println("Нету такого юзера "+user);
+            return;
+        }
+        userService.saveUser(user);
+        System.out.println(user +" изменен");
+
     }
 
     public void addBook(Long userId, Long bookId){

@@ -1,10 +1,7 @@
 package kz.iitu.library.services;
 
 import kz.iitu.library.controllers.UserController;
-import kz.iitu.library.models.Author;
-import kz.iitu.library.models.Book;
-import kz.iitu.library.models.Status;
-import kz.iitu.library.models.User;
+import kz.iitu.library.models.*;
 import kz.iitu.library.repo.AuthorRepository;
 import kz.iitu.library.repo.BookRepository;
 import kz.iitu.library.repo.UserRepository;
@@ -30,7 +27,7 @@ public class UserService {
     public void setAuthorRepository(AuthorRepository authorRepository){
         this.authorRepository=authorRepository;
     }
-@Autowired
+    @Autowired
     public void setBookRepository(BookRepository bookRepository){
         this.bookRepository=bookRepository;
     }
@@ -39,6 +36,7 @@ public class UserService {
     public boolean addUser(User user){
         if(userRepository.findUserByName(user.getName())!=null)
             return false;
+        user.setType(Type.NEWBIE);
         userRepository.save(user);
         return true;
     }
@@ -69,9 +67,16 @@ public class UserService {
         authorRepository.deleteAll();
     }
 
+    @Transactional
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
     public void addBook(Long userId, Long bookId) {
+        if (userRepository.findById(userId).get().getType() == Type.LIBRARIAN){
+            System.out.println("Нельзя давать книги библиотекарю");
+        }
         if(bookId<0){
-            System.out.println("Error");
+            System.out.println("Такой книги не существует");
             return;
         }
         Book book = bookRepository.findById(bookId).get();

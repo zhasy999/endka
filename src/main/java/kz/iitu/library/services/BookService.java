@@ -1,9 +1,6 @@
 package kz.iitu.library.services;
 
-import kz.iitu.library.models.Author;
-import kz.iitu.library.models.Book;
-import kz.iitu.library.models.Genre;
-import kz.iitu.library.models.Status;
+import kz.iitu.library.models.*;
 import kz.iitu.library.repo.BookRepository;
 import kz.iitu.library.repo.UserRepository;
 import kz.iitu.library.services.interfaces.BookServiceInt;
@@ -45,11 +42,11 @@ public class BookService implements BookServiceInt {
     @Transactional
     public boolean addBookToUser(Long userId, Long bookId) {
         if (bookRepository.findById(bookId).isEmpty() || userRepository.findById(userId).get() == null) {
-            System.out.println("Error");
+            System.out.println("Нету таких данных");
             return false;
         }
         if (bookRepository.findById(bookId).get().getUser().getId() != userId) {
-            System.out.println("Error");
+            System.out.println("Этот клиент не запрашивал книгу");
             return false;
         }
         Book book = bookRepository.findById(bookId).get();
@@ -59,7 +56,9 @@ public class BookService implements BookServiceInt {
         Date date = new Date();
         Calendar instance = Calendar.getInstance();
         instance.setTime(date);
-        instance.add(Calendar.DAY_OF_MONTH, 14);
+        if(userRepository.findById(userId).get().getType() == Type.NEWBIE) instance.add(Calendar.DAY_OF_MONTH, 14);
+        if(userRepository.findById(userId).get().getType() == Type.EXPERT) instance.add(Calendar.DAY_OF_MONTH, 30);
+
         Date newDate = instance.getTime();
         book.setGivenDate(date);
         book.setDueDate(newDate);

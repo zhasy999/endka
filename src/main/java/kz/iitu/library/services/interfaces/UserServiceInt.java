@@ -12,5 +12,7 @@ public interface UserServiceInt {
 
     Author findAuthorById(Long id);
 
+    void saveUser(User user);
+
     void clear();
 }

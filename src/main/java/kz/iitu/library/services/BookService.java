@@ -28,6 +28,41 @@ public class BookService implements BookServiceInt {
     }
 
     @Transactional
+    public List<Book> findAllByStatus(Status status) {
+        for (Book b : bookRepository.findAll()) {
+            Date date = new Date();
+            if (b.getDueDate() != null) {
+                if (b.getDueDate().before(date)) {
+                    b.setStatus(Status.OVERDUE);
+                    bookRepository.save(b);
+                }
+            }
+        }
+        return bookRepository.findAllByStatus(status);
+    }
+    @Transactional
+    public Book findBookByName(String title) {
+        return bookRepository.findBookByTitleIgnoreCase(title);
+    }
+    @Transactional
+    public Book findBookById(Long id) {
+        return bookRepository.findById(id).get();
+    }
+    @Transactional
+    public List<Book> findAll() {
+        List<Book> books = bookRepository.findAll();
+        return books;
+    }
+    @Transactional
+    public List<Book> findAllByAuthor(Author author) {
+        return bookRepository.findAllByAuthorsContaining(author);
+    }
+
+
+
+
+
+    @Transactional
     public boolean addBook(Book book) {
         if (bookRepository.findBookByTitleIgnoreCase(book.getTitle()) != null) {
             book.setId(Long.MIN_VALUE);
@@ -38,7 +73,6 @@ public class BookService implements BookServiceInt {
         bookRepository.save(book);
         return true;
     }
-
     @Transactional
     public boolean addBookToUser(Long userId, Long bookId) {
         if (bookRepository.findById(bookId).isEmpty() || userRepository.findById(userId).get() == null) {
@@ -66,7 +100,6 @@ public class BookService implements BookServiceInt {
         bookRepository.save(book);
         return true;
     }
-
     @Transactional
     public boolean returnBookFromUser(Long userId, Long bookId) {
         if (bookRepository.findById(bookId).isEmpty() || userRepository.findById(userId).get() == null) {
@@ -85,40 +118,11 @@ public class BookService implements BookServiceInt {
         bookRepository.save(book);
         return true;
     }
-
-    @Transactional
-    public List<Book> findAllByStatus(Status status) {
-        for (Book b : bookRepository.findAll()) {
-            Date date = new Date();
-            if (b.getDueDate() != null) {
-                if (b.getDueDate().before(date)) {
-                    b.setStatus(Status.OVERDUE);
-                    bookRepository.save(b);
-                }
-            }
-        }
-        return bookRepository.findAllByStatus(status);
-    }
-
-    @Transactional
-    public Book findBookByName(String title) {
-        return bookRepository.findBookByTitleIgnoreCase(title);
-    }
-
     @Transactional
     public void save(Book book) {
         bookRepository.save(book);
     }
 
-    @Transactional
-    public Book findBookById(Long id) {
-        return bookRepository.findById(id).get();
-    }
-
-    @Transactional
-    public Book findBookByAuthor(Author author) {
-        return bookRepository.findBookByAuthorsContaining(author);
-    }
 
     @Transactional
     public void clear() {
@@ -128,5 +132,10 @@ public class BookService implements BookServiceInt {
             bookRepository.save(b);
         }
         bookRepository.deleteAll();
+    }
+
+    @Override
+    public Long deleteBookByName(String title) {
+        return bookRepository.deleteBookByTitleIgnoreCase(title);
     }
 }

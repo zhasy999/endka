@@ -5,10 +5,8 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "authors")
 public class Author {
     @Id
@@ -20,7 +18,16 @@ public class Author {
     public Author(String name){
         this.name = name;
     }
-    @ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<Book> books;
 
     @Override

@@ -9,8 +9,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@ToString
 @Table(name = "books")
 public class Book {
     @Id
@@ -18,19 +16,19 @@ public class Book {
     private Long id;
 
     private String title;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "book_genres",
             joinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "genre_id", referencedColumnName = "id")})
     private List<Genre> genres;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "book_authors",
             joinColumns = {@JoinColumn(name = "book_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id", referencedColumnName = "id")})
     private List<Author> authors;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -40,8 +38,26 @@ public class Book {
     private Date givenDate;
     private Date dueDate;
 
-    public void notifyMe(){
-        if(this.getUser() != null) {
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", genres=" + genres +
+                ", authors=" + authors +
+                ", user=" + user +
+                ", status=" + status +
+                ", givenDate=" + givenDate +
+                ", dueDate=" + dueDate +
+                '}';
+    }
+
+    public Book(String title) {
+        this.title = title;
+    }
+
+    public void notifyMe() {
+        if (this.getUser() != null) {
             System.out.println("Книга теперь у клиента " + this.getUser().getName());
             this.getUser().notify(this);
         } else {

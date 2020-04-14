@@ -4,6 +4,7 @@ import kz.iitu.library.models.Author;
 import kz.iitu.library.models.Book;
 import kz.iitu.library.models.Genre;
 import kz.iitu.library.models.Status;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.websocket.server.ServerEndpoint;
@@ -23,9 +24,13 @@ public interface BookServiceInt {
 
     Book findBookById(Long id);
 
-    Book findBookByAuthor(Author author);
+    List<Book> findAllByAuthor(Author author);
+
+    List<Book> findAll();
 
     void save(Book book);
 
     void clear();
+
+    Long deleteBookByName(String title);
 }

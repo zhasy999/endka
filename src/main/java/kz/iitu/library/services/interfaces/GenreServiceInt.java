@@ -8,4 +8,5 @@ public interface GenreServiceInt {
     boolean addGenre(Genre genre);
     Genre findGenreByName(String name);
     void clear();
+    boolean deleteByGenreName(String name);
 }

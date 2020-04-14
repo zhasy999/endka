@@ -12,7 +12,12 @@ import java.util.List;
 public interface BookRepository extends CrudRepository<Book, Long> {
     List<Book> findAllByStatus(Status status);
 
+    List<Book> findAll();
+
     Book findBookByTitleIgnoreCase(String title);
 
-    Book findBookByAuthorsContaining(Author author);
+    List <Book> findAllByAuthorsContaining(Author author);
+
+    Long deleteBookByTitleIgnoreCase(String title);
+
 }

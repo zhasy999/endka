@@ -6,50 +6,77 @@ import kz.iitu.library.models.User;
 import kz.iitu.library.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
+@RequestMapping("/user")
 public class UserController {
     @Autowired
     private UserService userService;
 
-    public void addUser(User user){
+    @GetMapping
+    public List<User> findAllUsers(){
+        return userService.findAllUsers();
+    }
+
+    @GetMapping("/author={authorname}")
+    public Author findAuthorByName(@PathVariable String authorname){
+        return userService.findAuthorByName(authorname);
+    }
+
+    @GetMapping("/user={username}")
+    public User findUserByName(@PathVariable String username){
+        return userService.findUserByName(username);
+    }
+
+    @PostMapping
+    public String addUser(@RequestBody User user){
         if(userService.addUser(user)) {
-            System.out.println("Пользователь "+user+" добавлен");
-            return;
+            return ("Пользователь "+user+" добавлен");
         }
-        System.out.println(user + " Уже есть");
+        return (user + " Уже есть");
     }
 
-    public void addAuthor(Author author){
+    @PostMapping("/author")
+    public String addAuthor(@RequestBody Author author){
         if(userService.addAuthor(author)) {
-            System.out.println(author + "Автор добавлен");
-            return;
+            return(author + "Автор добавлен");
+
         }
-        System.out.println(author + " Уже существует");
+        return (author + " Уже существует");
     }
 
-    public void editUser(User user){
-        if(userService.findUserByName(user.getName()) == null) {
-            System.out.println("Нету такого юзера "+user);
-            return;
+    @PostMapping("/{userid}/edit")
+    public String editUser(@PathVariable Long userid,@RequestBody User user){
+        if(userService.findUserById(userid) == null) {
+            return ("Нету такого юзера "+user);
         }
         userService.saveUser(user);
-        System.out.println(user +" изменен");
-
+        return (user +" изменен");
     }
 
-    public void addBook(Long userId, Long bookId){
-        userService.addBook(userId, bookId);
+    @PostMapping("/addBook")
+    public boolean addBook(@RequestParam Long userId,@RequestParam Long bookId){
+        return userService.addBook(userId, bookId);
     }
 
-    public Author findAuthorByName(String name){
-        return userService.findAuthorByName(name);
+    @DeleteMapping("/deleteUser/{username}")
+    public boolean deleteUserByName(@PathVariable String username) {
+        if (userService.deleteUserByName(username) > 0) {
+            return true;
+        }
+        return false;
     }
-
-    public User findUserByName(String name){
-        return userService.findUserByName(name);
+    @DeleteMapping("/deleteBook/{bookname}")
+    public boolean deleteAuthorByName(@PathVariable String authorname) {
+        if (userService.deleteAuthorByName(authorname) > 0) {
+            return true;
+        }
+        return false;
     }
-
+    @DeleteMapping("cleanAuthorsAndUsers")
     public void clear() {
         userService.clear();
     }

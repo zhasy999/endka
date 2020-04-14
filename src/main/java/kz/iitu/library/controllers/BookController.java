@@ -2,68 +2,91 @@ package kz.iitu.library.controllers;
 
 import kz.iitu.library.models.*;
 import kz.iitu.library.services.BookService;
+import kz.iitu.library.services.GenreService;
 import kz.iitu.library.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@RequestMapping("/book")
+@RestController
 public class BookController {
 
     @Autowired
     private BookService bookService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private GenreService genreService;
 
-    public void addBook(Book book) {
+    @GetMapping
+    public List<Book> allBooks(){
+        return bookService.findAll();
+    }
+    @GetMapping("/status={status}")
+    public List<Book> findAllByStatus(@PathVariable Status status){
+       return bookService.findAllByStatus(status);
+    }
+    @GetMapping("/{id}")
+    public Book findBookByName(@PathVariable Long id) {
+        return bookService.findBookById(id);
+    }
+    @GetMapping("/author={authorname}")
+    public List<Book> findBookByAuthor(@PathVariable String authorname){
+        return bookService.findAllByAuthor(userService.findAuthorByName(authorname));
+    }
+
+    @PostMapping
+    public String addBook(@RequestBody Book book) {
         if (bookService.addBook(book)) {
-            System.out.println("Книга " + book + " добавлена");
-            return;
+            return ("Книга " + book + " добавлена");
         }
-        System.out.println(book + " Такая книга уже есть");
+        return (book + " Такая книга уже есть");
+
     }
 
-    public void editBook(Book book) {
-        if (bookService.findBookByName(book.getTitle()) != null && book.getId()>0) {
-            bookService.save(book);
-            System.out.println("Книга "+ book+" переработано");
-            return;
-        }
-        System.out.println( book+" Нет такой книги");
+    @PutMapping("/{id}")
+    public String editBook(@PathVariable Long id, @RequestParam String authorname, @RequestParam String genrename) {
+        Book book = bookService.findBookById(id);
+        List<Genre> genres = new ArrayList<Genre>();
+        List<Author> authors = new ArrayList<Author>();
+        authors.add(userService.findAuthorByName(authorname));
+        genres.add(genreService.findGenreByName(genrename));
+        book.setGenres(genres);
+        book.setAuthors(authors);
+        bookService.save(book);
+        return ("Книга "+ book + " переработано");
     }
 
-    public void addBookToUser(Long userId, Long bookId) {
+    @PostMapping("/addBook")
+    public String addBookToUser(@RequestParam Long userId,@RequestParam Long bookId) {
         if (bookService.addBookToUser(userId, bookId)) {
-            System.out.println("Книга добавлена пользователю " + userId);
             bookService.findBookById(bookId).notifyMe();
-            return;
+            return ("Книга добавлена пользователю " + userId);
         }
-        System.out.println("Выходить ошибка книга уже кому то присвоена или ее юзер не запрашивал");
+        return ("Выходить ошибка книга уже кому то присвоена или ее юзер не запрашивал");
     }
 
-    public void returnBookFromUser(Long userId, Long bookId) {
+    @PostMapping("/returnBook")
+    public String returnBookFromUser(@RequestParam Long userId,@RequestParam Long bookId) {
         if (bookService.returnBookFromUser(userId, bookId)) {
-            System.out.println("Книга вернулась с пользователя " + userId);
             bookService.findBookById(bookId).notifyMe();
-            return;
+            return ("Книга вернулась с пользователя " + userId);
         }
-        System.out.println("Ошибка книга уже свободна");
+        return ("Ошибка книга уже свободна");
     }
 
-    public void findAllByStatus(Status status){
-        System.out.println(bookService.findAllByStatus(status));
+    @DeleteMapping("/deleteBook/{bookname}")
+    public boolean deleteBookByName(@PathVariable String bookName) {
+        if (bookService.deleteBookByName(bookName) > 0) {
+            return true;
+        }
+        return false;
     }
 
-    public Book findBookByName(String title) {
-        return bookService.findBookByName(title);
-    }
-
-    public Book findBookByAuthor(String authorname){
-        return bookService.findBookByAuthor(userService.findAuthorByName(authorname));
-    }
-
+    @DeleteMapping("/cleanBooks")
     public void clear() {
         bookService.clear();
     }

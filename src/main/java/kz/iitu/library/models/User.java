@@ -5,7 +5,6 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -33,5 +32,10 @@ public class User {
     }
     public void notify(Book book){
         System.out.println("Книга " + book.getTitle() + " теперь у вас" );
+    }
+
+    public User(String name, Type type) {
+        this.name = name;
+        this.type=type;
     }
 }

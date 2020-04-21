@@ -58,7 +58,7 @@ public class Book {
 
     public void notifyMe() {
         if (this.getUser() != null) {
-            System.out.println("Книга теперь у клиента " + this.getUser().getName());
+            System.out.println("Книга теперь у клиента " + this.getUser().getUsername());
             this.getUser().notify(this);
         } else {
             System.out.println("Книга теперь свободна");

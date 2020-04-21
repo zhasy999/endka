@@ -31,6 +31,15 @@ public class UserController {
         return userService.findUserByName(username);
     }
 
+    //add user
+
+    @GetMapping("/create")
+    public void createUserByUsernamePassword(String username, String password){
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        userService.addUser(user);
+    }
     @PostMapping
     public String addUser(@RequestBody User user){
         if(userService.addUser(user)) {

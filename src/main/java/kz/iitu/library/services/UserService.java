@@ -4,21 +4,31 @@ import kz.iitu.library.controllers.UserController;
 import kz.iitu.library.models.*;
 import kz.iitu.library.repo.AuthorRepository;
 import kz.iitu.library.repo.BookRepository;
+import kz.iitu.library.repo.RoleRepository;
 import kz.iitu.library.repo.UserRepository;
 import kz.iitu.library.services.interfaces.UserServiceInt;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 
 @Service
-public class UserService implements UserServiceInt {
+public class UserService implements UserServiceInt, UserDetailsService {
     private UserRepository userRepository;
     private AuthorRepository authorRepository;
     private BookRepository bookRepository;
+    private RoleRepository roleRepository;
 
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     public void setUserRepository(UserRepository userRepository){
         this.userRepository=userRepository;
@@ -36,11 +46,13 @@ public class UserService implements UserServiceInt {
     public List<User> findAllUsers(){
         return (List<User>) userRepository.findAll();
     }
+
     @Transactional
     public boolean addUser(User user){
-        if(userRepository.findUserByNameIgnoreCase(user.getName())!=null)
+        if(userRepository.findUserByUsernameIgnoreCase(user.getUsername())!=null)
             return false;
-        user.setType(Type.NEWBIE);
+        user.setRoles(Collections.singletonList(roleRepository.findRoleByName("USER")));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
     }
@@ -68,7 +80,7 @@ public class UserService implements UserServiceInt {
 
     @Override
     public Long deleteUserByName(String name) {
-        return userRepository.deleteUserByNameIgnoreCase(name);
+        return userRepository.deleteUserByUsernameIgnoreCase(name);
     }
 
     @Override
@@ -78,7 +90,7 @@ public class UserService implements UserServiceInt {
 
     @Transactional
     public User findUserByName(String name) {
-        return userRepository.findUserByNameIgnoreCase(name);
+        return userRepository.findUserByUsernameIgnoreCase(name);
     }
     @Transactional
     public void clear() {
@@ -91,7 +103,7 @@ public class UserService implements UserServiceInt {
     }
     @Transactional
     public boolean addBook(Long userId, Long bookId) {
-        if (userRepository.findById(userId).get().getType() == Type.LIBRARIAN){
+        if (userRepository.findById(userId).get().getRoles().contains(roleRepository.findRoleByName("ADMIN"))){
             System.out.println("Нельзя давать книги библиотекарю");
             return false;
         }
@@ -100,5 +112,14 @@ public class UserService implements UserServiceInt {
         book.setUser(userRepository.findById(userId).get());
         bookRepository.save(book);
         return true;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findUserByUsernameIgnoreCase(username);
+        if(user == null){
+            throw new UsernameNotFoundException("User: " +username+" has not found");
+        }
+        return user;
     }
 }

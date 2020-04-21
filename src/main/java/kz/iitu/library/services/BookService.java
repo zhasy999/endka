@@ -90,8 +90,8 @@ public class BookService implements BookServiceInt {
         Date date = new Date();
         Calendar instance = Calendar.getInstance();
         instance.setTime(date);
-        if(userRepository.findById(userId).get().getType() == Type.NEWBIE) instance.add(Calendar.DAY_OF_MONTH, 14);
-        if(userRepository.findById(userId).get().getType() == Type.EXPERT) instance.add(Calendar.DAY_OF_MONTH, 30);
+//        if(userRepository.findById(userId).get().getType() == Type.NEWBIE) instance.add(Calendar.DAY_OF_MONTH, 14);
+//        if(userRepository.findById(userId).get().getType() == Type.EXPERT) instance.add(Calendar.DAY_OF_MONTH, 30);
 
         Date newDate = instance.getTime();
         book.setGivenDate(date);

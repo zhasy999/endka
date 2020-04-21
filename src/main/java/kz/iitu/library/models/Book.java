@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @Table(name = "books")
 public class Book {
     @Id
@@ -37,20 +38,6 @@ public class Book {
 
     private Date givenDate;
     private Date dueDate;
-
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", genres=" + genres +
-                ", authors=" + authors +
-                ", user=" + user +
-                ", status=" + status +
-                ", givenDate=" + givenDate +
-                ", dueDate=" + dueDate +
-                '}';
-    }
 
     public Book(String title) {
         this.title = title;

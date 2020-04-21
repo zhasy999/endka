@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
@@ -22,8 +23,6 @@ public class User implements UserDetails {
     private String username;
     private String password;
 
-
-
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Book> books;
 
@@ -32,15 +31,9 @@ public class User implements UserDetails {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")}
     )
+    @ToString.Exclude
     private List<Role> roles;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + username +
-                '}';
-    }
     public void notify(Book book){
         System.out.println("Книга " + book.getTitle() + " теперь у вас" );
     }

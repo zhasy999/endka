@@ -23,10 +23,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/book").permitAll()
                 .antMatchers("/user/create").hasAnyAuthority("ADMIN")
                 .anyRequest().authenticated()
-//                .and().formLogin()
-                .and()
-                .addFilter(new JwtTokenGeneratorFilter(authenticationManager()))
-                .addFilterAfter(new JwtTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .and().formLogin()
+//                .and()
+//                .addFilter(new JwtTokenGeneratorFilter(authenticationManager()))
+//                .addFilterAfter(new JwtTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
                 ;
     }

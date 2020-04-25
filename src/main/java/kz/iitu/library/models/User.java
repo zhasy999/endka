@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"books", "roles"})
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
@@ -31,7 +31,6 @@ public class User implements UserDetails {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")}
     )
-    @ToString.Exclude
     private List<Role> roles;
 
     public void notify(Book book){

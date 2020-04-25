@@ -1,5 +1,7 @@
 package kz.iitu.library.controllers;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import kz.iitu.library.models.*;
 import kz.iitu.library.services.BookService;
 import kz.iitu.library.services.GenreService;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 @RequestMapping("/book")
 @RestController
@@ -22,11 +25,17 @@ public class BookController {
     private GenreService genreService;
 
     @GetMapping
+    @ApiOperation(  value = "Find all books",
+                    notes = "",
+                    response = Book.class)
     public List<Book> allBooks(){
         return bookService.findAll();
     }
     @GetMapping("/status={status}")
-    public List<Book> findAllByStatus(@PathVariable Status status){
+    @ApiOperation(  value = "Find books by status",
+            notes = "Write status and find books",
+            response = Book.class)
+    public List<Book> findAllByStatus(@ApiParam(value = "value for status", required = true) @PathVariable Status status){
        return bookService.findAllByStatus(status);
     }
     @GetMapping("/{id}")

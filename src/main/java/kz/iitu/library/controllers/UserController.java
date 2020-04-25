@@ -32,7 +32,6 @@ public class UserController {
     }
 
     //add user
-
     @GetMapping("/create")
     public void createUserByUsernamePassword(String username, String password){
         User user = new User();
@@ -85,7 +84,7 @@ public class UserController {
         }
         return false;
     }
-    @DeleteMapping("cleanAuthorsAndUsers")
+    @DeleteMapping("/cleanAuthorsAndUsers")
     public void clear() {
         userService.clear();
     }

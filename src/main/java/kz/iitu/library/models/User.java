@@ -12,9 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = {"books", "roles"})
+@ToString(exclude = {"cars", "roles"})
 @Table(name = "users")
-public class User implements UserDetails {
+public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,7 +24,7 @@ public class User implements UserDetails {
     private String password;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Book> books;
+    private List<Car> cars;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
@@ -32,10 +32,6 @@ public class User implements UserDetails {
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")}
     )
     private List<Role> roles;
-
-    public void notify(Book book){
-        System.out.println("Книга " + book.getTitle() + " теперь у вас" );
-    }
 
     public User(String username) {
         this.username = username;

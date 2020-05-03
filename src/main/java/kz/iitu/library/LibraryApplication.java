@@ -3,7 +3,6 @@ package kz.iitu.library;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -33,12 +32,12 @@ public class LibraryApplication {
 
     private ApiInfo apiDetails(){
         return new ApiInfo(
-                "Library API",
-                "Library Application API for IITU",
-                "1.0",
+                "CarService API",
+                "CarService Application API for IITU",
+                "0.01",
                 "https://www.google.com",
-                new springfox.documentation.service.Contact("Dauren Buribekov","https://www.google.com", "dauren.buribekov@gmail.com"),
-                "API Library License",
+                new springfox.documentation.service.Contact("Zhaskanat","https://www.google.com", "zhasy99@mail.ru"),
+                "API CarService License",
                 "https://www.google.com",
                 Collections.emptyList());
     }

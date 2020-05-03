@@ -1,7 +1,7 @@
 package kz.iitu.library.models;
 
 public enum Status {
-    AVAILABLE, REQUESTED, ISSUED, OVERDUE;
+    FIXING, READY;
 
     public String getStatus(){
         return name();

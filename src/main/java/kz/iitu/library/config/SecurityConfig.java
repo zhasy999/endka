@@ -12,28 +12,32 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
     @Autowired
     private UserService userService;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/user", "/book", "/v2/api-docs").permitAll()
+                .antMatchers("/user/hello","/auth/**").permitAll()
+                .antMatchers("/user", "/car", "/v2/api-docs").permitAll()
                 .antMatchers("/user/create").hasAnyAuthority("ADMIN")
+                .antMatchers("/user/addCar").hasAnyAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and().formLogin()
-//                .and()
-//                .addFilter(new JwtTokenGeneratorFilter(authenticationManager()))
-//                .addFilterAfter(new JwtTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
-                ;
+                .and()
+                .addFilter(new JwtTokenGeneratorFilter(authenticationManager()))
+                .addFilterAfter(new JwtTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+//
     }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService)
